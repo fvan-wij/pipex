@@ -6,7 +6,7 @@
 #    By: flip <marvin@42.fr>                          +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/22 00:00:50 by flip          #+#    #+#                  #
-#    Updated: 2023/04/22 00:07:32 by flip          ########   odam.nl          #
+#    Updated: 2023/04/25 11:38:20 by fvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ OBJDIR 		:= 	./obj
 OBJS		:= 	$(addprefix $(OBJDIR)/,$(SRCS:.c=.o))
 SRCS		:= 	$(addprefix $(SRCDIR)/,$(SRCS))
 
-DEBUG		:= 	-fsanitize=address
+# DEBUG		:= 	-fsanitize=address
 
 # Colors #############################################
 Black		= "\033[0;30m"		# Black
@@ -36,28 +36,28 @@ Text_Off	= "\033[0m"			# Text Style Off
 Bold		= "\033[1m"			# Text Style Bold
 ######################################################
 
-all: $(NAME) $(NAME_BONUS)
+all: $(NAME)
 
 $(NAME): $(OBJS)
 	@$(MAKE) -C libft
 	@$(CC) $^ $(LIBFT) $(HEADERS) -o $(NAME)
-	@echo $(Green) $(Bold) Pipex ✅ $(Text_Off)
+	@echo $(Green) $(Bold) Pipex compiled succesfully ✅ $(Text_Off)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(OBJDIR)
 	@$(CC) $(FLAGS) -o $@ -c $< $(HEADERS)
 
-run:	$(NAME)
+run:	all
 
 clean:
-	@rm -rf $(OBJDIR) $(OBJDIR_BONUS)
+	@rm -rf $(OBJDIR)
+	@echo $(Yellow) Pipex: cleaned object files! $(Text_Off)
 	@$(MAKE) -C libft clean
-	@echo $(Yellow) Cleaned object files! $(Text_Off)
 
 fclean:	clean
-	@rm -f $(NAME) $(NAME_BONUS) $(LIBFT)
+	@rm -f $(NAME) $(LIBFT)
+	@echo $(Yellow) Pipex: cleaned executable! $(Text_Off)
 	@$(MAKE) -C libft fclean
-	@echo $(Yellow) Cleaned executable(s)! $(Text_Off)
 
 re:	fclean all
 
