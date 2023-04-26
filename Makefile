@@ -6,7 +6,7 @@
 #    By: flip <marvin@42.fr>                          +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/22 00:00:50 by flip          #+#    #+#                  #
-#    Updated: 2023/04/25 11:38:20 by fvan-wij      ########   odam.nl          #
+#    Updated: 2023/04/26 15:06:26 by fvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,7 @@ FLAGS		:= 	-Wall -Wextra -Werror
 LIBFT		:= 	./libft/libft.a
 HEADERS		:= 	-I ./includes -I ./libft
 SRCS		:= 	main.c \
+				parse_input.c \
 
 SRCDIR 		:= 	./src
 OBJDIR 		:= 	./obj
