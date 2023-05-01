@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/22 00:03:38 by flip          #+#    #+#                 */
-/*   Updated: 2023/04/26 17:41:00 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/01 22:05:50 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,32 +74,44 @@
 // 	return (EXIT_SUCCESS);
 // }
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[], char *envp[])
 {
 	int pid;
+	int	w_status;
 	int i;
-	
-	pid = 1;
-	i = 0;
-	if (argc == 5 && check_argv(argv))
-		write(1, "Correct input", 13);
-	else
-		write(1, "Incorrect argc", 15);
-	while (i < 5 && pid != 0)
-	{
-		pid = fork();
-		i++;
-	}
+	char *cmd;
+	int err;
 
+	i = 0;
+	w_status = 0;
+	if (argc == 5 && check_argv(argv))
+		write(1, "Correct input\n", 13);
+	else
+		write(1, "Incorrect argc\n", 15);
+	pid = fork();
+	if (pid == -1)
+		return (1);
+	char **bin_path = ft_split(envp[13], ':');
+	bin_path[0] = ft_strtrim(bin_path[0], "PATH=");
 	if (pid == 0)
-	{
-		printf("I'm a child!\n");
+	{	
+		while (bin_path[i])	
+		{
+			cmd = ft_strjoin(bin_path[i], ft_strjoin("/", argv[2]));
+			if(access(cmd, F_OK) == 0)
+			{
+				err = execve(cmd, &argv[2], envp);
+				free(cmd);
+			}
+			i++;
+		}
+		printf("err is: %d\n", err);
+		printf("fork returned: %d\n", pid);
 	}
 	else
 	{
-		waitpid(0);
-		printf("I'm a parent!\n");
+		wait(0);
+		printf("fork returned: %d\n", pid);
 	}
 	return EXIT_SUCCESS;
 }
-

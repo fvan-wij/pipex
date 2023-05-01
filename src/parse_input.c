@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/04/26 17:34:44 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/01 17:40:37 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,6 @@ int is_outfile(char *outfile)
 		return (0);
 	return (1);
 }
-
-// int is_command(char *command)
-// {
-//
-// }
 
 int	check_argv(char *argv[])
 {
