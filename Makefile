@@ -6,7 +6,7 @@
 #    By: flip <marvin@42.fr>                          +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/22 00:00:50 by flip          #+#    #+#                  #
-#    Updated: 2023/04/26 15:06:26 by fvan-wij      ########   odam.nl          #
+#    Updated: 2023/05/02 20:47:12 by fvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ OBJDIR 		:= 	./obj
 OBJS		:= 	$(addprefix $(OBJDIR)/,$(SRCS:.c=.o))
 SRCS		:= 	$(addprefix $(SRCDIR)/,$(SRCS))
 
-# DEBUG		:= 	-fsanitize=address
+DEBUG		:= 	-g -fsanitize=address
 
 # Colors #############################################
 Black		= "\033[0;30m"		# Black

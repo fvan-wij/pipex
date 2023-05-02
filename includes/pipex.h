@@ -10,6 +10,17 @@
 # include <stdio.h>
 # include <string.h>
 
-int	check_argv(char *argv[]);
+typedef struct s_cmd{
+	int 			index;
+	char 			**cmds;
+	struct s_cmd	*next;
+} t_cmd;
+
+typedef struct s_pipex{
+	char			**bin_path;
+	t_cmd			*cmd_list;
+} t_pipex;
+
+int	parse_input(t_pipex *meta, char *argv[], char *envp[]);
 
 #endif
