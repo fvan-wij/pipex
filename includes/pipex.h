@@ -11,8 +11,9 @@
 # include <string.h>
 
 typedef struct s_cmd{
-	int 			index;
+	int 			cmd_index;
 	char 			**cmds;
+	char			*cmd_path;
 	struct s_cmd	*next;
 } t_cmd;
 
@@ -21,6 +22,7 @@ typedef struct s_pipex{
 	t_cmd			*cmd_list;
 } t_pipex;
 
-int	parse_input(t_pipex *meta, char *argv[], char *envp[]);
+int		parse_input(t_pipex *meta, char *argv[], char *envp[]);
+int		execute_cmd(t_pipex *meta, int cmd_id, char *envp[]);
 
 #endif

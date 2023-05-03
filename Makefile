@@ -6,7 +6,7 @@
 #    By: flip <marvin@42.fr>                          +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/22 00:00:50 by flip          #+#    #+#                  #
-#    Updated: 2023/05/02 20:47:12 by fvan-wij      ########   odam.nl          #
+#    Updated: 2023/05/03 00:31:40 by flip          ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,6 +16,7 @@ LIBFT		:= 	./libft/libft.a
 HEADERS		:= 	-I ./includes -I ./libft
 SRCS		:= 	main.c \
 				parse_input.c \
+				execute_cmds.c \
 
 SRCDIR 		:= 	./src
 OBJDIR 		:= 	./obj

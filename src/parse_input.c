@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/02 21:44:02 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/03 00:46:45 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,19 @@ int is_outfile(char *outfile)
 	return (1);
 }
 
-int	append_node(t_cmd **head, char *cmds[])
+int	append_node(t_cmd **head, char *cmds[], char *cmd_path)
 {
 	t_cmd	*new_node;
 	t_cmd	*current;
-	int		i;	
 	
-	i = 0;
 	current = NULL;
 	new_node = malloc(1 * sizeof(t_cmd));
 	if (!new_node)
 		return (0);
-	new_node->cmds = cmds; 
+	new_node->cmds = cmds;
+	new_node->cmd_path = cmd_path;
+	printf("Append Node: new_node->cmd_path: %s\n", new_node->cmd_path);
+	new_node->cmd_index = 0;
 	if (!*head)
 		*head = new_node;
 	else
@@ -62,17 +63,16 @@ int is_command(t_pipex *meta, char *cmd, char *envp[])
 {
 	char	*cmd_path;
 	int		i;
-	int		j;
 	
 	i = 0;
-	j = 0;
-	meta->bin_path = ft_split(envp[13], ':'); 
+	meta->bin_path = ft_split(envp[33], ':'); // envp for Linux
+	// meta->bin_path = ft_split(envp[13], ':'); // envp for MacOS
 	meta->bin_path[0] = ft_strtrim(meta->bin_path[0], "PATH=");
 	while (meta->bin_path[i])	
 	{
 		char **argv_temp = ft_split(cmd, ' ');
 		cmd_path = ft_strjoin(meta->bin_path[i], ft_strjoin("/", argv_temp[0]));
-		if(access(cmd_path, X_OK) == 0 && append_node(&meta->cmd_list, argv_temp))
+		if(access(cmd_path, X_OK) == 0 && append_node(&meta->cmd_list, argv_temp, cmd_path))
 			return (free(cmd_path), 1);
 		i++;
 	}
