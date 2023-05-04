@@ -20,9 +20,11 @@ typedef struct s_cmd{
 typedef struct s_pipex{
 	char			**bin_path;
 	t_cmd			*cmd_list;
+	int				cmd_count;
+	int				process_count;
 } t_pipex;
 
-int		parse_input(t_pipex *meta, char *argv[], char *envp[]);
-int		execute_cmd(t_pipex *meta, int cmd_id, char *envp[]);
+int		parse_input(t_pipex *meta, int argc, char *argv[], char *envp[]);
+int		execute_cmd(t_pipex *meta, int process_count, char *envp[], int pipe_fd[]);
 
 #endif

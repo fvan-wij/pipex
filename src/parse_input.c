@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/03 00:46:45 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/04 18:11:52 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,7 @@ int	is_infile(char *infile)
 	return (1);
 }
 
-int is_outfile(char *outfile)
-{
-	int fd;
-
-	fd = open(outfile, O_CREAT | O_RDWR);
-	if (fd < 0)
-		return (0);
-	return (1);
-}
-
-int	append_node(t_cmd **head, char *cmds[], char *cmd_path)
+int	append_node(t_cmd **head, char *cmds[], char *cmd_path, int cmd_count)
 {
 	t_cmd	*new_node;
 	t_cmd	*current;
@@ -43,8 +33,7 @@ int	append_node(t_cmd **head, char *cmds[], char *cmd_path)
 		return (0);
 	new_node->cmds = cmds;
 	new_node->cmd_path = cmd_path;
-	printf("Append Node: new_node->cmd_path: %s\n", new_node->cmd_path);
-	new_node->cmd_index = 0;
+	new_node->cmd_index = cmd_count;
 	if (!*head)
 		*head = new_node;
 	else
@@ -59,36 +48,57 @@ int	append_node(t_cmd **head, char *cmds[], char *cmd_path)
 	return (1);
 }
 
+int	envp_path_index(char *envp[])
+{
+	int	path_index;
+
+	path_index = 0;
+	while (envp[path_index])
+	{
+		if (ft_strnstr(envp[path_index], "PATH=", 5))
+			return (path_index);
+		path_index++;
+	}
+	return (-1);
+}
+
 int is_command(t_pipex *meta, char *cmd, char *envp[])
 {
 	char	*cmd_path;
+	int		path_index;
 	int		i;
 	
 	i = 0;
-	meta->bin_path = ft_split(envp[33], ':'); // envp for Linux
-	// meta->bin_path = ft_split(envp[13], ':'); // envp for MacOS
+	path_index = envp_path_index(envp);
+	meta->bin_path = ft_split(envp[path_index], ':');
 	meta->bin_path[0] = ft_strtrim(meta->bin_path[0], "PATH=");
 	while (meta->bin_path[i])	
 	{
 		char **argv_temp = ft_split(cmd, ' ');
 		cmd_path = ft_strjoin(meta->bin_path[i], ft_strjoin("/", argv_temp[0]));
-		if(access(cmd_path, X_OK) == 0 && append_node(&meta->cmd_list, argv_temp, cmd_path))
-			return (free(cmd_path), 1);
+		if(access(cmd_path, X_OK) == 0 && append_node(&meta->cmd_list, argv_temp, cmd_path, meta->cmd_count))
+		{
+			meta->cmd_count++;
+			return (1);
+		}
 		i++;
 	}
 	return (0);
 }
 
-int	parse_input(t_pipex *meta, char *argv[], char *envp[])
+int	parse_input(t_pipex *meta, int argc, char *argv[], char *envp[])
 {
+	int	i;
+
+	i = 2;
 	if (!is_infile(argv[1]))
 		return (perror("Can't open infile"), 0);
-	if (!is_command(meta, argv[2], envp))
-		return (perror("Invalid command(s)"), 0);
-	if (!is_command(meta, argv[3], envp))
-		return (perror("Invalid command(s)"), 0);
-	if (!is_outfile(argv[4]))
-		return (perror("Error, outfile does not exist"),0);
+	while (i < argc - 1)
+	{
+		if (!is_command(meta, argv[i], envp))
+			return (perror("Invalid command(s)"), 0);
+		i++;
+	}
 	return (1);
 }
 

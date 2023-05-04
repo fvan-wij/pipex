@@ -6,7 +6,7 @@
 #    By: flip <marvin@42.fr>                          +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/22 00:00:50 by flip          #+#    #+#                  #
-#    Updated: 2023/05/03 00:31:40 by flip          ########   odam.nl          #
+#    Updated: 2023/05/04 18:24:05 by fvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,7 @@ clean:
 	@$(MAKE) -C libft clean
 
 fclean:	clean
-	@rm -f $(NAME) $(LIBFT)
+	@rm -f $(NAME) $(LIBFT) infile outfile
 	@echo $(Yellow) Pipex: cleaned executable! $(Text_Off)
 	@$(MAKE) -C libft fclean
 
