@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/22 00:03:38 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/05 17:36:44 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/05 18:35:37 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,25 +37,10 @@ void	print_cmds(t_pipex **meta)
 	}
 }
 
-int	(*initialize_pipes(int n))[2]
-{
-	int (*pipe_array)[2] = malloc(n * sizeof(int[2]));
-	int i;
-
-	i = 0;
-	while (i < n)
-	{
-		pipe(pipe_array[i]);
-		i++;
-	}
-	return pipe_array;
-}
 
 int main(int argc, char *argv[], char *envp[])
 {
 	t_pipex *meta;
-	pid_t	pid;
-	int		(*pipe_array)[2];
 	int		execution_status;
 
 	meta = malloc(sizeof(t_pipex) * 1);
@@ -70,15 +55,7 @@ int main(int argc, char *argv[], char *envp[])
 		write(1, "PARSING_STATUS: Incorrect argc.\n\n", 33);
 		exit(1);
 	}
-	pipe_array = initialize_pipes(meta->cmd_count - 1);
-	pid = 1;
-	while (meta->process_count < meta->cmd_count - 1 && pid != 0)
-	{
-		meta->process_count++;
-		pid = fork();
-		if (pid == 0)
-			execution_status = execute_cmd(meta, meta->process_count, envp, pipe_array[0]);
-	}
+	execution_status = spawn_child_processes(meta, envp);
 	return (execution_status);
 }
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   execute_cmds.c                                     :+:    :+:            */
+/*   pipex_execution.c                                  :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/02 23:55:30 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/05 17:50:10 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/05 18:35:34 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,46 +27,6 @@ void	*find_cmd(t_cmd *cmd_list, t_cmd **node, int process_count)
 	return (perror("Process couldn't match cmd_id"), NULL);
 }
 
-int	run_initial_child_process(t_cmd *cmd_node, int pipe_fd[], char *envp[])
-{
-	int	error_code;
-	int	infile;
-
-	printf("first cmd [%s]\n", cmd_node->cmds[0]);
-	close(pipe_fd[0]);
-	infile = open("infile", O_RDONLY);
-	dup2(infile, STDIN_FILENO);
-	dup2(pipe_fd[1], STDOUT_FILENO);
-	error_code = execve(cmd_node->cmd_path, cmd_node->cmds, envp);
-	return (error_code);
-}
-
-int	run_child_process(t_cmd *cmd_node, int pipe_fd[], char *envp[])
-{
-	int error_code;
-	
-	printf("middle cmd [%s]\n", cmd_node->cmds[0]);
-	dup2(pipe_fd[0], STDIN_FILENO);
-	dup2(pipe_fd[1], STDOUT_FILENO);
-	close(pipe_fd[0]);
-	close(pipe_fd[1]);
-	error_code = execve(cmd_node->cmd_path, cmd_node->cmds, envp);
-	return (error_code);
-}
-
-int run_final_child_process(t_cmd *cmd_node, int pipe_fd[], char *envp[])
-{
-	int error_code;
-	int	outfile;
-
-	printf("last cmd [%s]\n", cmd_node->cmds[0]);
-	close(pipe_fd[1]);
-	dup2(pipe_fd[0], STDIN_FILENO);
-	outfile = open("outfile", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	dup2(outfile, STDOUT_FILENO);
-	error_code = execve(cmd_node->cmd_path, cmd_node->cmds, envp);
-	return (error_code);
-}
 
 int	execute_cmd(t_pipex *meta, int process_count, char *envp[], int pipe_fd[])
 {

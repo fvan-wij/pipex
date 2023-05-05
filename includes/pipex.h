@@ -27,4 +27,9 @@ typedef struct s_pipex{
 int		parse_input(t_pipex *meta, int argc, char *argv[], char *envp[]);
 int		execute_cmd(t_pipex *meta, int process_count, char *envp[], int pipe_fd[]);
 
+int	(*initialize_pipes(int n))[2];
+int	spawn_child_processes(t_pipex *meta, char *envp[]);
+int	run_initial_child_process(t_cmd *cmd_node, int pipe_fd[], char *envp[]);
+int	run_child_process(t_cmd *cmd_node, int pipe_fd[], char *envp[]);
+int run_final_child_process(t_cmd *cmd_node, int pipe_fd[], char *envp[]);
 #endif
