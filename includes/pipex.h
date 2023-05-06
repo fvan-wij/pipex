@@ -22,14 +22,18 @@ typedef struct s_pipex{
 	t_cmd			*cmd_list;
 	int				cmd_count;
 	int				process_count;
+	char			*infile;
+	char			*outfile;
 } t_pipex;
 
 int		parse_input(t_pipex *meta, int argc, char *argv[], char *envp[]);
-int		execute_cmd(t_pipex *meta, int process_count, char *envp[], int pipe_fd[]);
 
 int	(*initialize_pipes(int n))[2];
-int	spawn_child_processes(t_pipex *meta, char *envp[]);
-int	run_initial_child_process(t_cmd *cmd_node, int pipe_fd[], char *envp[]);
+int	execute_cmd(t_pipex *meta, char *envp[]);
+int	find_cmd(t_cmd *cmd_list, t_cmd **node, int process_count);
+
+int	spawn_child_process(t_pipex *meta, int process_count, char *envp[], int pipe_fd[]);
+int	run_initial_child_process(t_pipex *meta, t_cmd *cmd_node, int pipe_fd[], char *envp[]);
 int	run_child_process(t_cmd *cmd_node, int pipe_fd[], char *envp[]);
-int run_final_child_process(t_cmd *cmd_node, int pipe_fd[], char *envp[]);
+int run_final_child_process(t_pipex *meta, t_cmd *cmd_node, int pipe_fd[], char *envp[]);
 #endif

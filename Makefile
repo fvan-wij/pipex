@@ -6,7 +6,7 @@
 #    By: flip <marvin@42.fr>                          +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/22 00:00:50 by flip          #+#    #+#                  #
-#    Updated: 2023/05/05 18:38:40 by flip          ########   odam.nl          #
+#    Updated: 2023/05/06 14:11:41 by flip          ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ FLAGS		:= 	-Wall -Wextra -Werror
 LIBFT		:= 	./libft/libft.a
 HEADERS		:= 	-I ./includes -I ./libft
 SRCS		:= 	main.c \
-				parse_input.c \
+				pipex_parsing.c \
 				pipex_execution.c \
 				pipex_processes.c \
 
@@ -23,8 +23,6 @@ SRCDIR 		:= 	./src
 OBJDIR 		:= 	./obj
 OBJS		:= 	$(addprefix $(OBJDIR)/,$(SRCS:.c=.o))
 SRCS		:= 	$(addprefix $(SRCDIR)/,$(SRCS))
-
-DEBUG		:= 	-g -fsanitize=address
 
 # Colors #############################################
 Black		= "\033[0;30m"		# Black
@@ -38,6 +36,10 @@ White		= "\033[0;37m"		# White
 Text_Off	= "\033[0m"			# Text Style Off
 Bold		= "\033[1m"			# Text Style Bold
 ######################################################
+
+# ifdef DEBUG
+# 	DEBUG += -g -fsanitize=address
+# endif
 
 all: $(NAME)
 
@@ -58,7 +60,7 @@ clean:
 	@$(MAKE) -C libft clean
 
 fclean:	clean
-	@rm -f $(NAME) $(LIBFT) infile outfile
+	@rm -f $(NAME) $(LIBFT)
 	@echo $(Yellow) Pipex: cleaned executable! $(Text_Off)
 	@$(MAKE) -C libft fclean
 

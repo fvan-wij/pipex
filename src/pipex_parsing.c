@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   parse_input.c                                      :+:    :+:            */
+/*   pipex_parsing.c                                    :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/04 18:11:52 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/06 14:11:44 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,21 +28,20 @@ int	append_node(t_cmd **head, char *cmds[], char *cmd_path, int cmd_count)
 	t_cmd	*current;
 	
 	current = NULL;
+	new_node = NULL;
 	new_node = malloc(1 * sizeof(t_cmd));
 	if (!new_node)
 		return (0);
 	new_node->cmds = cmds;
 	new_node->cmd_path = cmd_path;
 	new_node->cmd_index = cmd_count;
-	if (!*head)
+	if (*head == NULL)
 		*head = new_node;
 	else
 	{
 		current = *head;
 		while (current->next != NULL)
-		{
 			current = current->next;
-		}
 		current->next = new_node;
 	}
 	return (1);
@@ -99,6 +98,8 @@ int	parse_input(t_pipex *meta, int argc, char *argv[], char *envp[])
 			return (perror("Invalid command(s)"), 0);
 		i++;
 	}
+	meta->infile = argv[1];
+	meta->outfile = argv[argc - 1];
 	return (1);
 }
 
