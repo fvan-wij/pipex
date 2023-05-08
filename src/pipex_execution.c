@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/02 23:55:30 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/06 12:58:06 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/08 10:34:41 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,19 @@ int	execute_cmd(t_pipex *meta, char *envp[])
 	{
 		meta->process_count++;
 		pid = fork();
+		// if (pid == 0)
+		// 	execution_status = spawn_child_process(meta, meta->process_count, envp, pipe_array[meta->process_count - 1]);
 		if (pid == 0)
-			execution_status = spawn_child_process(meta, meta->process_count, envp, pipe_array[0]);
+			execution_status = spawn_child_process(meta, meta->process_count, envp, pipe_array);
 	}
+	// int i;
+	//
+	// i = 0;
+	// while (i < meta->cmd_count)
+	// {
+	// 	close(pipe_array[i][READ]);
+	// 	close(pipe_array[i][WRITE]);
+	// }
 	return (execution_status);
 }
 

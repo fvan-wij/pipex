@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/06 18:22:09 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/06 21:29:30 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,12 +92,12 @@ int	parse_input(t_pipex *meta, int argc, char *argv[], char *envp[])
 	i = 2;
 	if (!is_infile(argv[1]))
 		return (perror("Can't open infile"), 0);
-	while (i < argc)
+	while (i < argc - 1)
 	{
 		if (!is_command(meta, argv[i], envp))
 			return (0);
-		if (i == (argc - 1) && is_command(meta, argv[i], envp))
-			return (0);
+		// if (i == (argc - 1) && is_command(meta, argv[i], envp))
+		// 	return (0);
 		i++;
 	}
 	return (1);
