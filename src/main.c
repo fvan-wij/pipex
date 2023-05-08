@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/22 00:03:38 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/06 18:11:49 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/08 23:03:58 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 #include <string.h>
 #include <stdio.h>
 
+
 int	init_data_struct(t_pipex **meta, int argc, char *argv[])
 {
-	*meta = malloc(sizeof(t_pipex) * 1);
+	*meta = ft_malloc(sizeof(t_pipex), "init_data_struct");
 	if (!*meta)
 		return (0);
 	ft_bzero(*meta, sizeof(t_pipex));
@@ -39,6 +40,9 @@ int main(int argc, char *argv[], char *envp[])
 	if (argc < 5 || !parse_input(meta, argc, argv, envp))
 		return(perror("PARSING_STATUS: Incorrect argc.\n\n"), 1);
 	execution_status = execute_cmd(meta, envp);
+	//TO DO: Wait for children to finish and then free memory accordingly.
+	display_memory_usage();
+	// atexit(leaks_pipex);
 	return (execution_status);
 }
 

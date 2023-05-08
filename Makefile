@@ -6,7 +6,7 @@
 #    By: flip <marvin@42.fr>                          +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/22 00:00:50 by flip          #+#    #+#                  #
-#    Updated: 2023/05/06 14:11:41 by flip          ########   odam.nl          #
+#    Updated: 2023/05/08 21:46:11 by flip          ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,8 @@ SRCS		:= 	main.c \
 				pipex_parsing.c \
 				pipex_execution.c \
 				pipex_processes.c \
+				pipex_memory_metrics.c \
+				#Remove ^ at some point.
 
 SRCDIR 		:= 	./src
 OBJDIR 		:= 	./obj

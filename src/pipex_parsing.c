@@ -6,11 +6,12 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/06 21:29:30 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/08 23:00:43 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
+
 
 int	is_infile(char *infile)
 {
@@ -29,7 +30,7 @@ int	append_node(t_cmd **head, char *cmds[], char *cmd_path, int cmd_count)
 	
 	current = NULL;
 	new_node = NULL;
-	new_node = malloc(1 * sizeof(t_cmd));
+	new_node = ft_malloc(sizeof(t_cmd), "append_node");
 	if (!new_node)
 		return (0);
 	new_node->cmds = cmds;

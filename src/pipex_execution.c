@@ -6,11 +6,38 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/02 23:55:30 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/08 10:34:41 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/08 22:52:55 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
+
+int	(*initialize_pipes(int n))[2]
+{
+	int (*pipe_array)[2] = malloc(n * sizeof(int[2]));
+	int i;
+
+	i = 0;
+	while (i < n)
+	{
+		pipe(pipe_array[i]);
+		i++;
+	}
+	return pipe_array;
+}
+
+void	close_pipes(int n, int (*pipe_array)[2])
+{
+	int	i;
+
+	i = 0;
+	while (i < n)
+	{
+		close(pipe_array[i][READ]);
+		close(pipe_array[i][WRITE]);
+		i++;
+	}
+}
 
 int	find_cmd(t_cmd *cmd_list, t_cmd **node, int process_count)
 {
@@ -36,19 +63,10 @@ int	execute_cmd(t_pipex *meta, char *envp[])
 	{
 		meta->process_count++;
 		pid = fork();
-		// if (pid == 0)
-		// 	execution_status = spawn_child_process(meta, meta->process_count, envp, pipe_array[meta->process_count - 1]);
 		if (pid == 0)
 			execution_status = spawn_child_process(meta, meta->process_count, envp, pipe_array);
 	}
-	// int i;
-	//
-	// i = 0;
-	// while (i < meta->cmd_count)
-	// {
-	// 	close(pipe_array[i][READ]);
-	// 	close(pipe_array[i][WRITE]);
-	// }
+	close_pipes(meta->cmd_count - 1, pipe_array);
 	return (execution_status);
 }
 

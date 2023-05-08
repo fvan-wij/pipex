@@ -31,6 +31,12 @@ typedef struct s_pipex{
 	char			*outfile;
 } t_pipex;
 
+typedef struct s_mem{
+	int	allocated_memory;
+	int	freed_memory;
+
+} t_mem;
+
 int		parse_input(t_pipex *meta, int argc, char *argv[], char *envp[]);
 
 int	(*initialize_pipes(int n))[2];
@@ -46,4 +52,13 @@ int	spawn_child_process(t_pipex *meta, int process_count, char *envp[], int (*pi
 int	run_initial_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[], char *envp[], int process_count);
 int	run_child_process(t_cmd *cmd_node, int (*pipe_fd)[], char *envp[], int process_count);
 int run_final_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[], char *envp[], int process_count);
+
+// Memory metrics
+
+void	display_memory_usage();
+void	*ft_malloc(size_t size, const char str[]);
+void	ft_free(void *memory, size_t size ,const char str[]);
+void	ft_clear(t_cmd **lst);
+void	leaks_pipex();
+
 #endif
