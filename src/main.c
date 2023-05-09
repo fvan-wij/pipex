@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/22 00:03:38 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/08 23:03:58 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/09 13:15:09 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <time.h>
 #include <string.h>
 #include <stdio.h>
-
 
 int	init_data_struct(t_pipex **meta, int argc, char *argv[])
 {
@@ -42,7 +41,6 @@ int main(int argc, char *argv[], char *envp[])
 	execution_status = execute_cmd(meta, envp);
 	//TO DO: Wait for children to finish and then free memory accordingly.
 	display_memory_usage();
-	// atexit(leaks_pipex);
 	return (execution_status);
 }
 

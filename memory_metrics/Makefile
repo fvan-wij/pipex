@@ -3,22 +3,17 @@
 #                                                         ::::::::             #
 #    Makefile                                           :+:    :+:             #
 #                                                      +:+                     #
-#    By: flip <marvin@42.fr>                          +#+                      #
+#    By: fvan-wij <marvin@42.fr>                      +#+                      #
 #                                                    +#+                       #
-#    Created: 2023/04/22 00:00:50 by flip          #+#    #+#                  #
-#    Updated: 2023/05/09 12:03:51 by fvan-wij      ########   odam.nl          #
+#    Created: 2023/05/09 11:06:08 by fvan-wij      #+#    #+#                  #
+#    Updated: 2023/05/09 12:00:13 by fvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
-NAME		:=	pipex
+NAME		:=	memory_metrics.a
 FLAGS		:= 	-Wall -Wextra -Werror
-LIBFT		:= 	./libft/libft.a
-MEM_METRICS	:=	./memory_metrics/memory_metrics.a
-HEADERS		:= 	-I ./includes -I ./libft
-SRCS		:= 	main.c \
-				pipex_parsing.c \
-				pipex_execution.c \
-				pipex_processes.c \
+HEADERS		:= 	-I ./includes
+SRCS		:= 	memory_metrics.c \
 
 SRCDIR 		:= 	./src
 OBJDIR 		:= 	./obj
@@ -38,17 +33,11 @@ Text_Off	= "\033[0m"			# Text Style Off
 Bold		= "\033[1m"			# Text Style Bold
 ######################################################
 
-# ifdef DEBUG
-# 	DEBUG += -g -fsanitize=address
-# endif
-
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@$(MAKE) -C libft
-	@$(MAKE) -C memory_metrics
-	@$(CC) $^ $(LIBFT) $(MEM_METRICS) $(HEADERS) -o $(NAME)
-	@echo $(Green) $(Bold) Pipex compiled succesfully ✅ $(Text_Off)
+	@ar -rcs $(NAME) $(OBJS)
+	@echo $(Green) $(Bold) Memory_metrics compiled succesfully ✅ $(Text_Off)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(OBJDIR)
@@ -58,15 +47,11 @@ run:	all
 
 clean:
 	@rm -rf $(OBJDIR)
-	@echo $(Yellow) Pipex: cleaned object files! $(Text_Off)
-	@$(MAKE) -C libft clean
-	@$(MAKE) -C memory_metrics clean
+	@echo $(Yellow) Memory_metrics cleaned object files! $(Text_Off)
 
 fclean:	clean
-	@rm -f $(NAME) $(LIBFT) $(MEM_METRICS)
-	@echo $(Yellow) Pipex: cleaned executable! $(Text_Off)
-	@$(MAKE) -C libft fclean
-	@$(MAKE) -C memory_metrics fclean
+	@rm -f $(NAME)
+	@echo $(Yellow) Memory_metrics cleaned archive! $(Text_Off)
 
 re:	fclean all
 

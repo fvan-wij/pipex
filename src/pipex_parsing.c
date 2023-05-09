@@ -6,12 +6,11 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/08 23:00:43 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/09 14:34:31 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
-
 
 int	is_infile(char *infile)
 {
@@ -97,8 +96,6 @@ int	parse_input(t_pipex *meta, int argc, char *argv[], char *envp[])
 	{
 		if (!is_command(meta, argv[i], envp))
 			return (0);
-		// if (i == (argc - 1) && is_command(meta, argv[i], envp))
-		// 	return (0);
 		i++;
 	}
 	return (1);

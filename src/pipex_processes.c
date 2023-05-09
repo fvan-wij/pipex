@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/05 18:33:47 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/08 22:49:56 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/09 14:46:22 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,30 +16,17 @@ int	run_initial_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2],
 {
 	int	error_code;
 	int	infile;
-
-	printf("--> cmd#%d [%s]\n", cmd_node->cmd_index, cmd_node->cmds[0]);
-	close(pipe_fd[process_count][READ]);
-	// close(pipe_fd[process_count + 1][WRITE]);
+	print_cmds(cmd_node);
 	infile = open(meta->infile, O_RDONLY);
 	dup2(infile, STDIN_FILENO);
+	close(infile);
 	dup2(pipe_fd[process_count][WRITE], STDOUT_FILENO);
-	// close(pipe_fd[process_count][WRITE]);
-	// close(pipe_fd[process_count + 1][WRITE]);
-	error_code = execve(cmd_node->cmd_path, cmd_node->cmds, envp);
-	return (error_code);
-}
-
-int	run_child_process(t_cmd *cmd_node, int (*pipe_fd)[2], char *envp[], int process_count)
-{
-	int error_code;
-	
+	close_pipes(meta->cmd_count - 1, pipe_fd);
+	error_code = execve(cmd_node->cmd_path, cmd_node->cmds, envp); return (error_code); } int	run_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2], char *envp[], int process_count) { int error_code;
 	printf("--> cmd#%d [%s]\n", cmd_node->cmd_index, cmd_node->cmds[0]);
-	close(pipe_fd[process_count][READ]);
-	close(pipe_fd[process_count - 1][WRITE]);
-	dup2(pipe_fd[process_count - 1][READ], STDIN_FILENO);
-	dup2(pipe_fd[process_count][WRITE], STDOUT_FILENO);
-	close(pipe_fd[process_count - 1][READ]);
-	close(pipe_fd[process_count][WRITE]);
+	dup2(pipe_fd[process_count - 1][READ], STDIN_FILENO); //pipe[0][READ]
+	dup2(pipe_fd[process_count][WRITE], STDOUT_FILENO); //pipe[1][WRITE]
+	close_pipes(meta->cmd_count - 1, pipe_fd);
 	error_code = execve(cmd_node->cmd_path, cmd_node->cmds, envp);
 	return (error_code);
 }
@@ -49,15 +36,12 @@ int run_final_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2], c
 	int error_code;
 	int	outfile;
 
-	printf("--> cmd#%d [%s]\n", cmd_node->cmd_index, cmd_node->cmds[0]);
-	close(pipe_fd[process_count - 1][WRITE]);
-	// close(pipe_fd[process_count][WRITE]);
-	close(pipe_fd[process_count - 1][WRITE]);
-	// close(pipe_fd[process_count][WRITE]);
-	dup2(pipe_fd[process_count - 1][READ], STDIN_FILENO);
-	close(pipe_fd[process_count - 1][READ]);
+	print_cmds(cmd_node);
+	dup2(pipe_fd[process_count - 1][READ], STDIN_FILENO); //pipe[1][READ]
 	outfile = open(meta->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	dup2(outfile, STDOUT_FILENO);
+	close(outfile);
+	close_pipes(meta->cmd_count - 1, pipe_fd);
 	error_code = execve(cmd_node->cmd_path, cmd_node->cmds, envp);
 	return (error_code);
 }
@@ -75,7 +59,7 @@ int	spawn_child_process(t_pipex *meta, int process_count, char *envp[], int (*pi
 	if (process_count == 0)
 		error_code = run_initial_child_process(meta, cmd_node, pipe_fd, envp, process_count);
 	else if (process_count != 0 && process_count != meta->cmd_count -1)
-		error_code = run_child_process(cmd_node, pipe_fd, envp, process_count);		
+		error_code = run_child_process(meta, cmd_node, pipe_fd, envp, process_count);		
 	else 
 		error_code = run_final_child_process(meta, cmd_node, pipe_fd, envp, process_count);
 	printf("error_code: %d\n", error_code);
