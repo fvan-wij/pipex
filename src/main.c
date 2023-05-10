@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/22 00:03:38 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/10 09:36:32 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/10 15:15:39 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,17 @@ int	init_data_struct(t_pipex **meta, int argc, char *argv[])
 int main(int argc, char *argv[], char *envp[])
 {
 	t_pipex *meta;
+	int		status;
 
 	if (!init_data_struct(&meta, argc, argv))
 		return (perror("ALLOCATION_ERROR: error allocationg data for t_pipex *meta."), 1);
 	if (argc < 5 || !parse_input(meta, argc, argv, envp))
 		return(1);
-	execute_cmd(meta, envp);
-	while (wait(NULL) > 0);
+	status = execute_cmd(meta, envp);
+	ft_printf("status: %d\n", status);
+	while (wait(NULL) > 0)
+		display_memory_usage();
 	//TO DO: Wait for children to finish and then free memory accordingly.
-	display_memory_usage();
 	return (EXIT_SUCCESS);
 }
 

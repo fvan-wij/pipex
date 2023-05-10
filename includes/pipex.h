@@ -29,7 +29,7 @@ typedef struct s_cmd{
 
 //MAIN STRUCT    pipex: main struct
 typedef struct s_pipex{
-	char			**bin_path;
+	char			**bin_path; 
 	t_cmd			*cmd_list;
 	int				cmd_count;
 	int				process_count;
@@ -57,5 +57,6 @@ int		run_final_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[], c
 
 //Pipex_utilities
 void	print_cmds(t_cmd *cmd_node);
+char	*ft_strchr_rev(const char *s, char c);
 
 #endif

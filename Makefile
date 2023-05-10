@@ -6,12 +6,12 @@
 #    By: flip <marvin@42.fr>                          +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/22 00:00:50 by flip          #+#    #+#                  #
-#    Updated: 2023/05/10 09:21:21 by flip          ########   odam.nl          #
+#    Updated: 2023/05/10 16:44:53 by fvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		:=	pipex
-FLAGS		:= 	-Wall -Wextra -Werror
+FLAGS		:= 	#-Wall -Wextra -Werror
 LIBFT		:= 	./libft/libft.a
 MEM_METRICS	:=	./memory_metrics/memory_metrics.a
 HEADERS		:= 	-I ./includes -I ./libft
@@ -27,6 +27,7 @@ OBJDIR 		:= 	./obj
 OBJS		:= 	$(addprefix $(OBJDIR)/,$(SRCS:.c=.o))
 SRCS		:= 	$(addprefix $(SRCDIR)/,$(SRCS))
 
+# DEBUG		:=
 # Colors #############################################
 Black		= "\033[0;30m"		# Black
 Red			= "\033[0;31m"		# Red
@@ -40,9 +41,9 @@ Text_Off	= "\033[0m"			# Text Style Off
 Bold		= "\033[1m"			# Text Style Bold
 ######################################################
 
-# ifdef DEBUG
-# 	DEBUG += -g -fsanitize=address
-# endif
+ifdef DEBUG
+	CC += -g -fsanitize=address
+endif
 
 all: $(NAME)
 

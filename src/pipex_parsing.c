@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/10 09:41:34 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/10 16:57:10 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	append_node(t_cmd **head, char *cmds[], char *cmd_path, int cmd_count)
 	new_node = ft_malloc(sizeof(t_cmd), "append_node");
 	if (!new_node)
 		return (0);
+	new_node->next = NULL;
 	new_node->cmds = cmds;
 	new_node->cmd_path = cmd_path;
 	new_node->cmd_index = cmd_count;
@@ -40,7 +41,7 @@ int	append_node(t_cmd **head, char *cmds[], char *cmd_path, int cmd_count)
 	else
 	{
 		current = *head;
-		while (current->next != NULL)
+		while (current && current->next != NULL)
 			current = current->next;
 		current->next = new_node;
 	}
@@ -61,19 +62,43 @@ int	envp_path_index(char *envp[])
 	return (-1);
 }
 
-int is_command(t_pipex *meta, char *cmd, char *envp[])
+int	path_as_input(t_pipex *meta, char *cmd)
 {
-	char	*cmd_path;
-	int		path_index;
-	int		i;
-	
+	char **argv_temp;
+	char *cmd_path;
+
+	argv_temp = ft_split(cmd, ' ');
+	cmd_path = argv_temp[0];
+	if (access(argv_temp[0], X_OK) == -1)	
+	{
+		printf("Yeet\n");
+		// printf("argv_temp[0]: %s\n", argv_temp[0]);
+		return (0);
+	}
+	else
+	{
+		argv_temp[0] = ft_strchr_rev(argv_temp[0], '/');
+		if (!append_node(&meta->cmd_list, argv_temp, cmd_path, meta->cmd_count))
+			return (0);
+		else {
+			meta->cmd_count++;
+			return (1);
+		}
+	}
+}
+
+int	cmd_as_input(t_pipex *meta, char *cmd, char *envp[], int path_index)
+{
+	int	i;
+	char *cmd_path;
+	char **argv_temp;
+
 	i = 0;
-	path_index = envp_path_index(envp);
 	meta->bin_path = ft_split(envp[path_index], ':');
 	meta->bin_path[0] = ft_strtrim(meta->bin_path[0], "PATH=");
 	while (meta->bin_path[i])	
 	{
-		char **argv_temp = ft_split(cmd, ' ');
+		argv_temp = ft_split(cmd, ' ');
 		cmd_path = ft_strjoin(meta->bin_path[i], ft_strjoin("/", argv_temp[0]));
 		if(access(cmd_path, X_OK) == 0 && append_node(&meta->cmd_list, argv_temp, cmd_path, meta->cmd_count))
 		{
@@ -83,6 +108,17 @@ int is_command(t_pipex *meta, char *cmd, char *envp[])
 		i++;
 	}
 	return (0);
+}
+
+int is_command(t_pipex *meta, char *cmd, char *envp[])
+{
+	int		path_index;
+
+	path_index = envp_path_index(envp);
+	if (path_index == -1 || cmd[0] == '/') //Input is path to cmd.
+		return (path_as_input(meta, cmd));
+	else //Path has been set
+		return (cmd_as_input(meta, cmd, envp, path_index));
 }
 
 int	parse_input(t_pipex *meta, int argc, char *argv[], char *envp[])
