@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/02 23:55:30 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/09 15:39:57 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/10 09:30:54 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,9 @@ int	execute_cmd(t_pipex *meta, char *envp[])
 	{
 		meta->process_count++;
 		pid = fork();
-		if (pid == 0)
+		if (pid == -1)
+			perror("Error: forking has failed.\n");
+		else if (pid == 0)
 			execution_status = spawn_child_process(meta, meta->process_count, envp, pipe_array);
 	}
 	close_pipes(meta->cmd_count - 1, pipe_array);

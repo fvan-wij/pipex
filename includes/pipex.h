@@ -8,6 +8,7 @@
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/uio.h>
+# include <sys/wait.h>
 # include <stdio.h>
 # include <string.h>
 
@@ -21,8 +22,8 @@ typedef enum s_ios{
 //LIST		     cmd: command_linked_list
 typedef struct s_cmd{ 
 	int 			cmd_index;
-	char 			**cmds;
 	char			*cmd_path;
+	char 			**cmds;
 	struct s_cmd	*next;
 } t_cmd;
 

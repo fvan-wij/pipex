@@ -6,25 +6,11 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/05 18:33:47 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/09 17:24:05 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/10 09:31:58 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
-
-void	print_cmds(t_cmd *cmd_node)
-{
-	int	i;
-
-	i = 1;
-	printf("--> cmd#%d [%s ", cmd_node->cmd_index, cmd_node->cmds[0]);
-	while (cmd_node->cmds[i])
-	{
-		printf("%s", cmd_node->cmds[i]);
-		i++;
-	}
-	printf("]\n");
-}
 
 int	run_initial_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2], char *envp[], int process_count)
 {
@@ -38,8 +24,7 @@ int	run_initial_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2],
 	close(infile);
 	dup2(pipe_fd[process_count][WRITE], STDOUT_FILENO);
 	close_pipes(meta->cmd_count - 1, pipe_fd);
-	if (!execve(cmd_node->cmd_path, cmd_node->cmds, envp))
-		perror("error");
+	execve(cmd_node->cmd_path, cmd_node->cmds, envp);
 	return (-1);
 }
 
@@ -49,8 +34,7 @@ int	run_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2], char *e
 	dup2(pipe_fd[process_count - 1][READ], STDIN_FILENO); //pipe[0][READ]
 	dup2(pipe_fd[process_count][WRITE], STDOUT_FILENO); //pipe[1][WRITE]
 	close_pipes(meta->cmd_count - 1, pipe_fd);
-	if (!execve(cmd_node->cmd_path, cmd_node->cmds, envp))
-		perror("error");
+	execve(cmd_node->cmd_path, cmd_node->cmds, envp);
 	return (-1);
 }
 
@@ -64,8 +48,7 @@ int run_final_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2], c
 	dup2(outfile, STDOUT_FILENO);
 	close(outfile);
 	close_pipes(meta->cmd_count - 1, pipe_fd);
-	if (!execve(cmd_node->cmd_path, cmd_node->cmds, envp))
-		perror("error");
+	execve(cmd_node->cmd_path, cmd_node->cmds, envp);
 	return (-1);
 }
 
