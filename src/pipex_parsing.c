@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/10 16:57:10 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/11 13:34:14 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,12 +112,12 @@ int	cmd_as_input(t_pipex *meta, char *cmd, char *envp[], int path_index)
 
 int is_command(t_pipex *meta, char *cmd, char *envp[])
 {
-	int		path_index;
+	int	path_index;
 
 	path_index = envp_path_index(envp);
-	if (path_index == -1 || cmd[0] == '/') //Input is path to cmd.
+	if (path_index == -1 || cmd[0] == '/')
 		return (path_as_input(meta, cmd));
-	else //Path has been set
+	else
 		return (cmd_as_input(meta, cmd, envp, path_index));
 }
 
@@ -127,11 +127,18 @@ int	parse_input(t_pipex *meta, int argc, char *argv[], char *envp[])
 
 	i = 2;
 	if (!is_infile(argv[1]))
-		return (perror("pipex"), 0);
+	{
+		perror("pipex");
+		exit (1);
+	}
 	while (i < argc - 1)
 	{
 		if (!is_command(meta, argv[i], envp))
-			return (ft_printf("pipex: command not found: %s\n", argv[i]), 0);
+		{
+			ft_free(meta, sizeof(t_pipex), "parse_input");
+			ft_printf("pipex: command not found: %s\n", argv[i]);
+			exit (127);
+		}
 		i++;
 	}
 	return (1);

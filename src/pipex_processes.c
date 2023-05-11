@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/05 18:33:47 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/10 16:03:43 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/11 11:16:19 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	run_initial_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2],
 	// char *error_msg;
 
 	status = 0;
-	print_cmds(cmd_node);
+	// print_cmds(cmd_node);
 	infile = open(meta->infile, O_RDONLY);
 	if (infile < 0)
 		perror("error");
@@ -27,7 +27,8 @@ int	run_initial_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2],
 	close(infile);
 	dup2(pipe_fd[process_count][WRITE], STDOUT_FILENO);
 	close_pipes(meta->cmd_count - 1, pipe_fd);
-	status = execve(cmd_node->cmd_path, cmd_node->cmds, envp);
+	if(execve(cmd_node->cmd_path, cmd_node->cmds, envp) == -1)
+		exit(1);
 	return (status);
 }
 
@@ -36,12 +37,13 @@ int	run_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2], char *e
 	int status;
 
 	status = 0;
-	print_cmds(cmd_node);
+	// print_cmds(cmd_node);
 	dup2(pipe_fd[process_count - 1][READ], STDIN_FILENO); //pipe[0][READ]
 	dup2(pipe_fd[process_count][WRITE], STDOUT_FILENO); //pipe[1][WRITE]
 	close_pipes(meta->cmd_count - 1, pipe_fd);
-	execve(cmd_node->cmd_path, cmd_node->cmds, envp);
-	return (-1);
+	if(execve(cmd_node->cmd_path, cmd_node->cmds, envp) == -1)
+		exit(1);
+	return (status);
 }
 
 int run_final_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2], char *envp[], int process_count)
@@ -50,7 +52,7 @@ int run_final_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2], c
 	int status;
 	
 	status = 0;
-	print_cmds(cmd_node);
+	// print_cmds(cmd_node);
 	dup2(pipe_fd[process_count - 1][READ], STDIN_FILENO); //pipe[1][READ]
 	outfile = open(meta->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (outfile < 0)
@@ -58,9 +60,9 @@ int run_final_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2], c
 	dup2(outfile, STDOUT_FILENO);
 	close(outfile);
 	close_pipes(meta->cmd_count - 1, pipe_fd);
-	if (execve(cmd_node->cmd_path, cmd_node->cmds, envp) == -1)
-		perror("Error executing command");
-	return (-1);
+	if(execve(cmd_node->cmd_path, cmd_node->cmds, envp) == -1)
+		exit(1);
+	return (status);
 }
 
 int	spawn_child_process(t_pipex *meta, int process_count, char *envp[], int (*pipe_fd)[])

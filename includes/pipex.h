@@ -11,6 +11,7 @@
 # include <sys/wait.h>
 # include <stdio.h>
 # include <string.h>
+# include <errno.h>
 
 //######################################DATA_TYPES#########################
 //ENUM		   ios: input_output_stream
