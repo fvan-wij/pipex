@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/09 14:45:13 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/10 15:31:48 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/11 20:32:04 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,45 @@ char	*ft_strchr_rev(const char *s, char c) //Might leak!
 		i--;
 	}
 	return (NULL);
+}
+
+int	envp_path_index(char *envp[])
+{
+	int	path_index;
+
+	path_index = 0;
+	while (envp[path_index])
+	{
+		if (ft_strnstr(envp[path_index], "PATH=", 5))
+			return (path_index);
+		path_index++;
+	}
+	return (-1);
+}
+
+int	append_node(t_cmd **head, char *cmds[], char *cmd_path, int cmd_count)
+{
+	t_cmd	*new_node;
+	t_cmd	*current;
+	
+	current = NULL;
+	new_node = NULL;
+	new_node = malloc(sizeof(t_cmd));
+	if (!new_node)
+		return (0);
+	new_node->next = NULL;
+	new_node->cmds = cmds;
+	new_node->cmd_path = cmd_path;
+	new_node->cmd_index = cmd_count;
+	if (*head == NULL)
+		*head = new_node;
+	else
+	{
+		current = *head;
+		while (current && current->next != NULL)
+			current = current->next;
+		current->next = new_node;
+	}
+	return (1);
 }
 

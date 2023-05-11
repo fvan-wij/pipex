@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/11 15:23:17 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/11 17:07:44 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/11 21:00:26 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,10 @@ static void	del_ll(t_cmd **lst)
 static void	free_mem_ptr(char *flags, va_list mem_ptr)
 {
 	int i;
+	t_cmd *temp;
 
 	i = 0;
+	temp = NULL;
 	while (flags[i])
 	{
 		if (flags[i] == '%' && flags[i + 1] == '1' && flags[i + 2] == 'd')
@@ -54,16 +56,18 @@ static void	free_mem_ptr(char *flags, va_list mem_ptr)
 			del_2d(va_arg(mem_ptr, char **));
 		else if (flags[i] == '%' && flags[i + 1] == 'l' && flags[i + 2] == 'l')
 		{
-			t_cmd *ll = (t_cmd*)(va_arg(mem_ptr, t_cmd **));
-			del_ll(&ll);
+			temp = (t_cmd*)(va_arg(mem_ptr, t_cmd **));
+			del_ll(&temp);
 		}
 		else if (flags[i] == '%' && flags[i + 1] == 'g' && flags[i + 2] == 'm')
 			free(va_arg(mem_ptr, void *));
+		else if (flags[i] == '%' && flags[i + 1] == 'p' && flags[i + 2] == 'a')
+			free(va_arg(mem_ptr, int(*)[]));
 		i++;
 	}
 }
 
-int	free_va_mem(char *flags, ...)
+void	free_va_mem(char *flags, ...)
 {
 	va_list mem_ptr;
 
@@ -72,16 +76,13 @@ int	free_va_mem(char *flags, ...)
 	va_end(mem_ptr);	
 }
 
-int	free_va_mem_and_exit(char *flags, ...)
+void	free_va_mem_and_exit(char *flags, ...)
 {
 	va_list mem_ptr;
-	int		error;
 
-	error = errno;
 	va_start (mem_ptr, flags);
-	perror("error");
 	free_mem_ptr(flags, mem_ptr);
 	va_end(mem_ptr);	
-	exit(error);
+	exit(errno);
 }
 

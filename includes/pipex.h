@@ -1,10 +1,11 @@
 #ifndef PIPEX_H
 # define PIPEX_H
 
+//############################HEADERS############################
+
 # include <unistd.h>
 # include <stdlib.h>
 # include "../libft/libft.h"
-# include "memory_metrics.h"
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/uio.h>
@@ -13,55 +14,62 @@
 # include <string.h>
 # include <errno.h>
 
-//######################################DATA_TYPES#########################
-//ENUM		   ios: input_output_stream
+//###############################################################
+//---------------------------------------------------------------
+//############################DATA_TYPES#########################
+
+//Enumerator - defines the read and write end of a pipe;
 typedef enum s_ios{ 
 	READ,
 	WRITE,
-} t_ios;
+}	t_ios;
 
-//LIST		     cmd: command_linked_list
+//Linked list - contains all the data necessary to run an command (e.g. path to command, additional flags, command index);
 typedef struct s_cmd{ 
-	int 			cmd_index;
+	struct s_cmd	*next;
 	char			*cmd_path;
 	char 			**cmds;
-	struct s_cmd	*next;
-} t_cmd;
+	int 			cmd_index;
+}	t_cmd;
 
-//MAIN STRUCT    pipex: main struct
+//Main struct - contains all meta data
 typedef struct s_pipex{
-	char			**bin_path; 
 	t_cmd			*cmd_list;
-	int				cmd_count;
-	int				process_count;
+	char			**bin_path; 
 	char			*infile;
 	char			*outfile;
-} t_pipex;
+	int				cmd_count;
+	int				process_count;
+}	t_pipex;
 
-//######################################SRC_FILES##########################
-//Pipex_execution
-int		execute_cmd(t_pipex *meta, char *envp[]);
+//###############################################################
+//---------------------------------------------------------------
+//#############################SRC_FILES#########################
+
+//		Pipex_execution.c
+int		execute_cmd(t_pipex *meta, char *envp[], int (*pipe_fd)[2]);
 int		find_cmd(t_cmd *cmd_list, t_cmd **node, int process_count);
 
-//Pipex_parsing
+//		Pipex_parsing.c
 int		parse_input(t_pipex *meta, int argc, char *argv[], char *envp[]);
 
-//Pipex_pipes
-void	close_pipes(int n, int (*pipe_array)[2]);
+//		Pipex_pipes.c
+void	close_pipes(int n, int (*pipe_fd)[2]);
 int		(*initialize_pipes(int n))[2];
 
-//Pipex_processes
-int		spawn_child_process(t_pipex *meta, int process_count, char *envp[], int (*pipe_fd)[]);
-int		run_initial_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[], char *envp[], int process_count);
-int		run_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[2], char *envp[], int process_count);
-int		run_final_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[], char *envp[], int process_count);
+//		Pipex_processes.c
+int		spawn_child_process(t_pipex *meta, int process_count, char *envp[], int (*pipe_fd)[2]);
 
-//Pipex_utilities
+//		Pipex_utilities.c
 void	print_cmds(t_cmd *cmd_node);
 char	*ft_strchr_rev(const char *s, char c);
+int		envp_path_index(char *envp[]);
+int		append_node(t_cmd **head, char *cmds[], char *cmd_path, int cmd_count);
 
-//Pipex_error_handling
-int		free_va_mem_and_exit(char *flags, ...);
-int		free_va_mem(char *flags, ...);
+//		Pipex_error_handling.c
+void	free_va_mem_and_exit(char *flags, ...);
+void	free_va_mem(char *flags, ...);
+
+//###############################################################
 
 #endif

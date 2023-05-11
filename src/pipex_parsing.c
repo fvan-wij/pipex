@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/11 17:15:44 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/11 20:50:40 by flip          ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,45 +22,6 @@ int	is_infile(char *infile)
 	return (1);
 }
 
-int	append_node(t_cmd **head, char *cmds[], char *cmd_path, int cmd_count)
-{
-	t_cmd	*new_node;
-	t_cmd	*current;
-	
-	current = NULL;
-	new_node = NULL;
-	new_node = ft_malloc(sizeof(t_cmd), "append_node");
-	if (!new_node)
-		return (0);
-	new_node->next = NULL;
-	new_node->cmds = cmds;
-	new_node->cmd_path = cmd_path;
-	new_node->cmd_index = cmd_count;
-	if (*head == NULL)
-		*head = new_node;
-	else
-	{
-		current = *head;
-		while (current && current->next != NULL)
-			current = current->next;
-		current->next = new_node;
-	}
-	return (1);
-}
-
-int	envp_path_index(char *envp[])
-{
-	int	path_index;
-
-	path_index = 0;
-	while (envp[path_index])
-	{
-		if (ft_strnstr(envp[path_index], "PATH=", 5))
-			return (path_index);
-		path_index++;
-	}
-	return (-1);
-}
 
 int	path_as_input(t_pipex *meta, char *cmd)
 {
@@ -69,7 +30,7 @@ int	path_as_input(t_pipex *meta, char *cmd)
 
 	argv_temp = ft_split(cmd, ' ');
 	cmd_path = argv_temp[0];
-	if (access(argv_temp[0], X_OK) == -1)	
+	if (access(argv_temp[0], X_OK | F_OK) == -1)	
 		return (0);
 	else
 	{
@@ -126,7 +87,7 @@ int	parse_input(t_pipex *meta, int argc, char *argv[], char *envp[])
 
 	i = 2;
 	if (!is_infile(argv[1]))
-		free_va_mem_and_exit("%gm", meta);
+		perror("error");
 	while (i < argc - 1)
 	{
 		if (!is_command(meta, argv[i], envp))
