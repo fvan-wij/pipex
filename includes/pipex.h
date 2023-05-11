@@ -60,4 +60,8 @@ int		run_final_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd)[], c
 void	print_cmds(t_cmd *cmd_node);
 char	*ft_strchr_rev(const char *s, char c);
 
+//Pipex_error_handling
+int		free_va_mem_and_exit(char *flags, ...);
+int		free_va_mem(char *flags, ...);
+
 #endif
