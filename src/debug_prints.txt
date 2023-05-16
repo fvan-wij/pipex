@@ -1,0 +1,5 @@
+	-> Printing argv
+
+	printf("argv_temp[0]: %s\n", argv_temp[0]);
+
+

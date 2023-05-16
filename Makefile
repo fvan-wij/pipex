@@ -6,7 +6,7 @@
 #    By: flip <marvin@42.fr>                          +#+                      #
 #                                                    +#+                       #
 #    Created: 2023/04/22 00:00:50 by flip          #+#    #+#                  #
-#    Updated: 2023/05/16 10:21:36 by fvan-wij      ########   odam.nl          #
+#    Updated: 2023/05/16 17:17:44 by fvan-wij      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,8 +50,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	@$(MAKE) -C libft
-	# @$(MAKE) -C memory_metrics
-	@$(CC) $^ $(LIBFT) $(MEM_METRICS) $(HEADERS) -o $(NAME)
+	@$(CC) $^ $(LIBFT) $(HEADERS) -o $(NAME)
 	@echo $(Green) $(Bold) Pipex compiled succesfully ✅ $(Text_Off)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
@@ -64,13 +63,11 @@ clean:
 	@rm -rf $(OBJDIR)
 	@echo $(Yellow) Pipex: cleaned object files! $(Text_Off)
 	@$(MAKE) -C libft clean
-	# @$(MAKE) -C memory_metrics clean
 
 fclean:	clean
-	@rm -f $(NAME) $(LIBFT) $(MEM_METRICS)
+	@rm -f $(NAME) $(LIBFT)
 	@echo $(Yellow) Pipex: cleaned executable! $(Text_Off)
 	@$(MAKE) -C libft fclean
-	# @$(MAKE) -C memory_metrics fclean
 
 re:	fclean all
 

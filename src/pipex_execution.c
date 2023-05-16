@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/02 23:55:30 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/11 19:49:07 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/16 15:05:23 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,17 @@ int	find_cmd(t_cmd *cmd_list, t_cmd **node, int process_count)
 	return (0);
 }
 
-int	execute_cmd(t_pipex *meta, char *envp[], int (*pipe_fd)[2])
+int	execute_cmd(t_pipex *meta, char *envp[], int (*pipe_fd)[2], pid_t *pid)
 {
 	int		execution_status;
-	pid_t	pid;
 
-	pid = 1;
-	while (meta->process_count < meta->cmd_count - 1 && pid != 0)
+	while (meta->process_count < meta->cmd_count - 1 && *pid != 0)
 	{
 		meta->process_count++;
-		pid = fork();
-		if (pid == -1)
+		*pid = fork();
+		if (*pid == -1)
 			free_va_mem_and_exit("%ll %2d %gm", meta->cmd_list, meta->bin_path, meta);
-		else if (pid == 0)
+		else if (*pid == 0)
 			execution_status = spawn_child_process(meta, meta->process_count, envp, pipe_fd);
 	}
 	close_pipes(meta->cmd_count - 1, pipe_fd);

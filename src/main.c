@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/22 00:03:38 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/16 11:51:07 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/16 17:24:31 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,21 +34,21 @@ int main(int argc, char *argv[], char *envp[])
 	pid_t	pid;
 	int		status;
 	int		(*pipe_fd)[2];
+	int		i;
 
-	pid = 0;
+	pid = 1;
+	i = 0;
 	if (!init_data_struct(&meta, argc, argv))
 		return (perror("pipex"), 1);
 	if (argc < 5 || !parse_input(meta, argc, argv, envp))
 		return (free_va_mem("%gm", meta), 1);
 	if(!(pipe_fd = initialize_pipes(meta->cmd_count - 1)))
 		return (free_va_mem("%2d %ll %gm", meta->bin_path, meta->cmd_list, meta), 1);
-	execute_cmd(meta, envp, pipe_fd);
-	while (waitpid(pid, &status, 0))
-	{
-		free_va_mem("%2d %ll %gm %pa", meta->bin_path, meta->cmd_list, meta, pipe_fd);
-		if (WIFEXITED(status) == 1)
-			exit(1);
-	}
-	return (EXIT_SUCCESS);
+	execute_cmd(meta, envp, pipe_fd, &pid);
+	free_va_mem("%2d %ll %gm %pa", meta->bin_path, meta->cmd_list, meta, pipe_fd);
+	waitpid(pid, &status, 0);
+	while (wait(NULL) != -1)
+		;
+	return (WEXITSTATUS(status));
 }
 

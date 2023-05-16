@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/16 11:34:01 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/16 17:16:28 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	is_infile(char *infile)
 	fd = open(infile, O_RDONLY);
 	if (fd < 0)
 		return (0);
+	close(fd);
 	return (1);
 }
 
@@ -34,14 +35,9 @@ int	path_as_input(t_pipex *meta, char *cmd)
 		return (0);
 	else
 	{
-		argv_temp[0] = ft_strchr_rev(argv_temp[0], '/');
-		if (!append_node(&meta->cmd_list, argv_temp, cmd_path, meta->cmd_count))
-			return (0);
-		else 
-		{
-			meta->cmd_count++;
-			return (1);
-		}
+		if (ft_strncmp(argv_temp[0], "./", 2) != 0)
+			argv_temp[0] = ft_strchr_rev(argv_temp[0], '/');
+		return (append_node(&meta->cmd_list, argv_temp, cmd_path, meta->cmd_count));
 	}
 }
 
@@ -59,7 +55,9 @@ int	cmd_as_input(t_pipex *meta, char *cmd, char *envp[], int path_index)
 		argv_temp = ft_split(cmd, ' ');
 		cmd_path = ft_strjoin(meta->bin_path[i], ft_strjoin("/", argv_temp[0]));
 		if(access(cmd_path, X_OK) == 0 && append_node(&meta->cmd_list, argv_temp, cmd_path, meta->cmd_count))
+		{
 			return (1);
+		}
 		else
 			free_va_mem("%1d %2d", cmd_path, argv_temp);
 		i++;
@@ -72,7 +70,7 @@ int is_command(t_pipex *meta, char *cmd, char *envp[])
 	int	path_index;
 
 	path_index = envp_path_index(envp);
-	if (path_index == -1 || cmd[0] == '/')
+	if (path_index == -1 || cmd[0] == '/' || ft_strncmp(cmd,"./", 2) == 0)
 		return (path_as_input(meta, cmd));
 	else
 		return (cmd_as_input(meta, cmd, envp, path_index));

@@ -47,7 +47,7 @@ typedef struct s_pipex{
 //#############################SRC_FILES#########################
 
 //		Pipex_execution.c
-int		execute_cmd(t_pipex *meta, char *envp[], int (*pipe_fd)[2]);
+int		execute_cmd(t_pipex *meta, char *envp[], int (*pipe_fd)[2], pid_t *pid);
 int		find_cmd(t_cmd *cmd_list, t_cmd **node, int process_count);
 
 //		Pipex_parsing.c
