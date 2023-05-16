@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/11 20:50:40 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/16 11:34:01 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,7 @@ int	cmd_as_input(t_pipex *meta, char *cmd, char *envp[], int path_index)
 		argv_temp = ft_split(cmd, ' ');
 		cmd_path = ft_strjoin(meta->bin_path[i], ft_strjoin("/", argv_temp[0]));
 		if(access(cmd_path, X_OK) == 0 && append_node(&meta->cmd_list, argv_temp, cmd_path, meta->cmd_count))
-		{
-			meta->cmd_count++;
 			return (1);
-		}
 		else
 			free_va_mem("%1d %2d", cmd_path, argv_temp);
 		i++;
@@ -87,11 +84,30 @@ int	parse_input(t_pipex *meta, int argc, char *argv[], char *envp[])
 
 	i = 2;
 	if (!is_infile(argv[1]))
-		perror("error");
+	{
+		write(STDERR_FILENO, "pipex: ", 7);
+		ft_putstr_fd(strerror(errno), STDERR_FILENO);
+		write(STDERR_FILENO, ": ", 2);
+		ft_putstr_fd(argv[1], STDERR_FILENO);
+		write(STDERR_FILENO, "\n", 1);
+	}
 	while (i < argc - 1)
 	{
-		if (!is_command(meta, argv[i], envp))
-			free_va_mem_and_exit("%ll %2d %gm", meta->cmd_list, meta->bin_path, meta);
+		if (i != (argc - 2) && !is_command(meta, argv[i], envp))
+		{
+			ft_putstr_fd("pipex: command not found: ", STDERR_FILENO);
+			ft_putstr_fd(argv[i], STDERR_FILENO);
+			write(STDERR_FILENO, "\n", 1);
+		}
+		else if (i == (argc - 2) && !is_command(meta, argv[i], envp))
+		{
+			ft_putstr_fd("pipex: command not found: ", STDERR_FILENO);
+			ft_putstr_fd(argv[i], STDERR_FILENO);
+			free_va_mem("%ll %2d %gm", meta->cmd_list, meta->bin_path, meta);
+			write(STDERR_FILENO, "\n", 1);
+			exit(127);
+		}
+		meta->cmd_count++;
 		i++;
 	}
 	return (1);

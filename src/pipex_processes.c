@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/05 18:33:47 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/11 20:54:44 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/16 11:42:27 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,25 @@ static int run_final_child_process(t_pipex *meta, t_cmd *cmd_node, int (*pipe_fd
 {
 	int	outfile; 
 	
-	dup2(pipe_fd[process_count - 1][READ], STDIN_FILENO); //pipe[1][READ]
+	dup2(pipe_fd[process_count - 1][READ], STDIN_FILENO);
 	outfile = open(meta->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (outfile < 0)
-		free_va_mem_and_exit("%2d %ll %gm %pa", meta->bin_path, meta->cmd_list, meta, pipe_fd);
+	{
+		ft_putstr_fd("pipex: ", STDERR_FILENO);
+		ft_putstr_fd(strerror(errno), STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		ft_putstr_fd(meta->outfile, STDERR_FILENO);
+		write(STDERR_FILENO, "\n", 1);
+		free_va_mem("%2d %ll %gm %pa", meta->bin_path, meta->cmd_list, meta, pipe_fd);
+		close(outfile);
+		close_pipes(meta->cmd_count - 1, pipe_fd);
+		exit(1);
+	}
 	dup2(outfile, STDOUT_FILENO);
 	close(outfile);
 	close_pipes(meta->cmd_count - 1, pipe_fd);
 	if(execve(cmd_node->cmd_path, cmd_node->cmds, envp) == -1)
-		free_va_mem_and_exit("%2d %ll %gm %pa", meta->bin_path, meta->cmd_list, meta, pipe_fd);
+		free_va_mem("%2d %ll %gm %pa", meta->bin_path, meta->cmd_list, meta, pipe_fd);
 	return (-1);
 }
 
