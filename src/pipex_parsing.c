@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/26 15:06:41 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/17 15:37:27 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/17 18:13:27 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,11 @@ static int	path_as_input(t_pipex *meta, char *cmd)
 	argv_temp = ft_split(cmd, ' ');
 	cmd_path = argv_temp[0];
 	if (access(argv_temp[0], X_OK | F_OK) == -1)
+	{
+		free(cmd_path);
+		del_2d(argv_temp);
 		return (0);
+	}
 	else
 	{
 		if (ft_strncmp(argv_temp[0], "./", 2) != 0)

@@ -6,14 +6,14 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/05 18:33:47 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/17 15:41:09 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/17 17:59:01 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
 static void	run_initial_child_process(t_pipex *meta, t_cmd *cmd_node,
-		int (*pipe_fd)[2], char *envp[], int process_count)
+		t_pipes *pipe_fd, char *envp[], int process_count)
 {
 	int	infile;
 
@@ -30,7 +30,7 @@ static void	run_initial_child_process(t_pipex *meta, t_cmd *cmd_node,
 }
 
 static void	run_child_process(t_pipex *meta, t_cmd *cmd_node,
-		int (*pipe_fd)[2], char *envp[], int process_count)
+		t_pipes *pipe_fd, char *envp[], int process_count)
 {
 	redirect_child(pipe_fd, meta, process_count);
 	if (execve(cmd_node->cmd_path, cmd_node->cmds, envp) == -1)
@@ -38,7 +38,7 @@ static void	run_child_process(t_pipex *meta, t_cmd *cmd_node,
 }
 
 static void	run_final_child_process(t_pipex *meta, t_cmd *cmd_node,
-		int (*pipe_fd)[2], char *envp[], int process_count)
+		t_pipes *pipe_fd, char *envp[], int process_count)
 {
 	int	outfile;
 
@@ -56,7 +56,7 @@ static void	run_final_child_process(t_pipex *meta, t_cmd *cmd_node,
 }
 
 int	spawn_child_process(t_pipex *meta, int process_count,
-		char *envp[], int (*pipe_fd)[])
+		char *envp[], t_pipes *pipe_fd)
 {
 	t_cmd	*cmd_node;
 

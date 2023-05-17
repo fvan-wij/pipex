@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/22 00:03:38 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/17 15:28:25 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/17 18:13:24 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 #include <time.h>
 #include <string.h>
 #include <stdio.h>
+
+void	f()
+{
+	system("leaks pipex");
+}
 
 int	init_data_struct(t_pipex **meta, int argc, char *argv[])
 {
@@ -30,11 +35,12 @@ int	init_data_struct(t_pipex **meta, int argc, char *argv[])
 
 int	main(int argc, char *argv[], char *envp[])
 {
+	t_pipes	*pipe_fd;
 	t_pipex	*meta;
 	pid_t	pid;
 	int		status;
-	int		(*pipe_fd)[2];
 
+	atexit(f);
 	pid = 1;
 	if (argc < 5)
 		return (-1);
@@ -49,5 +55,7 @@ int	main(int argc, char *argv[], char *envp[])
 	waitpid(pid, &status, 0);
 	while (wait(NULL) != -1)
 		;
+	free(pipe_fd);
+	free_pipex(meta, WEXITSTATUS(status));
 	return (WEXITSTATUS(status));
 }

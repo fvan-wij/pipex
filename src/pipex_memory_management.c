@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/11 15:23:17 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/17 15:31:40 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/17 17:39:46 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,35 @@ void	del_ll(t_cmd **lst)
 	}
 }
 
+void	del_pipes(t_pipes *pipe_fd, int n)
+{
+	int	i;
+
+	i = 0;
+	while (i < n)
+	{
+		free(pipe_fd[i]);
+		i++;
+	}
+	free(pipe_fd);
+}
+
 void	free_pipex(t_pipex *meta, int exit_code)
 {
 	if (meta->bin_path)
+	{
+		ft_printf("freed meta->binpath\n");
 		del_2d(meta->bin_path);
+	}
 	if (meta->cmd_list)
+	{
+		ft_printf("freed meta->cmd_list\n");
 		del_ll(&meta->cmd_list);
+	}
 	if (meta)
+	{
+		ft_printf("freed meta\n");
 		free(meta);
+	}
 	exit (exit_code);
 }

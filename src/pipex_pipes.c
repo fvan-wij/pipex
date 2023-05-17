@@ -6,16 +6,16 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/09 14:47:29 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/17 16:59:20 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/17 17:09:45 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-int	(*initialize_pipes(int n))[2]
+t_pipes	*initialize_pipes(int n)
 {
-	int	(*pipe_fd)[2];
-	int	i;
+	t_pipes	*pipe_fd;
+	int		i;
 
 	pipe_fd = malloc(n * sizeof(int [2]));
 	if (!pipe_fd)
@@ -29,7 +29,7 @@ int	(*initialize_pipes(int n))[2]
 	return (pipe_fd);
 }
 
-void	close_pipes(int n, int (*pipe_fd)[2])
+void	close_pipes(int n, t_pipes *pipe_fd)
 {
 	int	i;
 

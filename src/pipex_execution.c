@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/02 23:55:30 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/17 15:30:15 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/17 18:07:37 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,11 @@ int	find_cmd(t_cmd *cmd_list, t_cmd **node, int process_count)
 	return (0);
 }
 
-int	execute_cmd(t_pipex *meta, char *envp[], int (*pipe_fd)[2], pid_t *pid)
+int	execute_cmd(t_pipex *meta, char *envp[], t_pipes *pipe_fd, pid_t *pid)
 {
 	int		execution_status;
-
+	
+	execution_status = 0;
 	while (meta->process_count < meta->cmd_count - 1 && *pid != 0)
 	{
 		meta->process_count++;
