@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/09 14:45:13 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/11 20:32:04 by flip          ########   odam.nl         */
+/*   Updated: 2023/05/17 15:43:15 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ void	print_cmds(t_cmd *cmd_node)
 	printf("]\n");
 }
 
-char	*ft_strchr_rev(const char *s, char c) //Might leak!
+char	*ft_strchr_rev(const char *s, char c)
 {
 	int	i;
-	
+
 	if (!s)
 		return (NULL);
 	i = ft_strlen(s);
@@ -60,7 +60,7 @@ int	append_node(t_cmd **head, char *cmds[], char *cmd_path, int cmd_count)
 {
 	t_cmd	*new_node;
 	t_cmd	*current;
-	
+
 	current = NULL;
 	new_node = NULL;
 	new_node = malloc(sizeof(t_cmd));
@@ -81,4 +81,3 @@ int	append_node(t_cmd **head, char *cmds[], char *cmd_path, int cmd_count)
 	}
 	return (1);
 }
-

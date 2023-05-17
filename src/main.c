@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/22 00:03:38 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/16 17:24:31 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/17 15:28:25 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,27 +28,26 @@ int	init_data_struct(t_pipex **meta, int argc, char *argv[])
 	return (1);
 }
 
-int main(int argc, char *argv[], char *envp[])
+int	main(int argc, char *argv[], char *envp[])
 {
-	t_pipex *meta;
+	t_pipex	*meta;
 	pid_t	pid;
 	int		status;
 	int		(*pipe_fd)[2];
-	int		i;
 
 	pid = 1;
-	i = 0;
+	if (argc < 5)
+		return (-1);
 	if (!init_data_struct(&meta, argc, argv))
-		return (perror("pipex"), 1);
-	if (argc < 5 || !parse_input(meta, argc, argv, envp))
-		return (free_va_mem("%gm", meta), 1);
-	if(!(pipe_fd = initialize_pipes(meta->cmd_count - 1)))
-		return (free_va_mem("%2d %ll %gm", meta->bin_path, meta->cmd_list, meta), 1);
-	execute_cmd(meta, envp, pipe_fd, &pid);
-	free_va_mem("%2d %ll %gm %pa", meta->bin_path, meta->cmd_list, meta, pipe_fd);
+		return (perror("pipex"), -2);
+	parse_input(meta, argc, argv, envp);
+	pipe_fd = initialize_pipes(meta->cmd_count - 1);
+	if (!pipe_fd)
+		free_pipex(meta, 1);
+	if (execute_cmd(meta, envp, pipe_fd, &pid) == -1)
+		free_pipex(meta, ERR_EXECUTION);
 	waitpid(pid, &status, 0);
 	while (wait(NULL) != -1)
 		;
 	return (WEXITSTATUS(status));
 }
-

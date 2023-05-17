@@ -6,7 +6,7 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/02 23:55:30 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/16 15:05:23 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/17 15:30:15 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@ int	execute_cmd(t_pipex *meta, char *envp[], int (*pipe_fd)[2], pid_t *pid)
 		meta->process_count++;
 		*pid = fork();
 		if (*pid == -1)
-			free_va_mem_and_exit("%ll %2d %gm", meta->cmd_list, meta->bin_path, meta);
+			free_pipex(meta, -1);
 		else if (*pid == 0)
-			execution_status = spawn_child_process(meta, meta->process_count, envp, pipe_fd);
+			execution_status = spawn_child_process(meta, meta->process_count,
+					envp, pipe_fd);
 	}
 	close_pipes(meta->cmd_count - 1, pipe_fd);
 	return (execution_status);
 }
-
