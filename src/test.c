@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <unistd.h>
+#include "../libft/libft.h"
 
 typedef	int t_pipes[2];
 
@@ -27,9 +28,21 @@ void	f()
 
 int main()
 {
-	t_pipes *pipe_fd;
+	// t_pipes *pipe_fd;
 
-	atexit(f);
-	pipe_fd = initialize_pipes(2);
-	// free(pipe_fd);
+	// atexit(f);
+	// pipe_fd = initialize_pipes(2);
+	char string[] = "Hey I always say: 'What is up'";
+	char **temp;
+	int	i;
+
+	temp = ft_split_quotations(string, ' ');
+	
+	ft_printf("temp: %s\n", temp[4]);
+	// i = 0;
+	// {
+	// 	while (temp[i]) 
+	// 	ft_printf("temp[%d]: %s\n", temp[i]);
+	// 	i++;
+	// }
 }
