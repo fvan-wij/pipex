@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   pipex.h                                            :+:    :+:            */
+/*   pipex.h                                           :+:    :+:             */
 /*                                                     +:+                    */
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/17 16:18:33 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/17 17:24:14 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/19 14:35:27 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,14 @@ typedef enum s_ios{
 
 //Enumerator - defines error messages;
 typedef enum s_err{
+	ERR,
 	ERR_ALLOCATION,
 	ERR_PERMISSION,
 	ERR_CMD_NOT_FOUND,
 	ERR_REDIRECTION,
 	ERR_EXECUTION,
+	ERR_ARGC_COUNT,
+	ERR_FORK,
 }	t_err;
 
 //Linked list - contains all the data necessary to run an command
@@ -64,31 +67,32 @@ typedef struct s_pipex{
 	char			*outfile;
 	int				cmd_count;
 	int				process_count;
+	char			**envp;
 }	t_pipex;
 
 //Typedef array of pipes - used to create an array of pipes without confusing
 //						   the fuck out of people due to weird syntax;
-typedef	int t_pipes[2];
+typedef int	t_pipes[2];
 
 //###############################################################
 //--------------------------SRC_FILES----------------------------
 //###############################################################
 
 //		Pipex_execution.c
-int		execute_cmd(t_pipex *meta, char *envp[], t_pipes *pipe_fd, pid_t *pid);
+int		execute_cmd(t_pipex *meta, t_pipes *pipe_fd, pid_t *pid);
 int		find_cmd(t_cmd *cmd_list, t_cmd **node, int process_count);
 
 //		Pipex_parsing.c
-int		parse_input(t_pipex *meta, int argc, char *argv[], char *envp[]);
+int		parse_input(t_pipex *meta, int argc, char *argv[]);
 
 //		Pipex_pipes.c
 void	close_pipes(int n, t_pipes *pipe_fd);
 // int		(*initialize_pipes(int n))[2];
-t_pipes *initialize_pipes(int n);
+t_pipes	*initialize_pipes(int n);
 
 //		Pipex_processes.c
 int		spawn_child_process(t_pipex *meta, int process_count,
-			char *envp[], t_pipes *pipe_fd);
+			t_pipes *pipe_fd);
 
 //		Pipex_redirection.c 
 int		redirect_init_child(int infile, t_pipes *pipe_fd,
@@ -105,10 +109,11 @@ int		envp_path_index(char *envp[]);
 int		append_node(t_cmd **head, char *cmds[], char *cmd_path, int cmd_count);
 
 //		Pipex_memory_management.c
-void	free_pipex(t_pipex *meta, int exit_code);
 void	del_pipes(t_pipes *pipe_fd, int n);
 void	del_ll(t_cmd **lst);
 void	del_2d(char **arr);
+void	exit_pipex(t_pipex *meta, int exit_code);
+void	exit_due_final_cmd_failure(t_pipex *meta);
 
 //		Pipex_error_messages.c
 void	error_cmd_not_found(char *argv);

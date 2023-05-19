@@ -6,21 +6,13 @@
 /*   By: flip <marvin@42.fr>                          +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/04/22 00:03:38 by flip          #+#    #+#                 */
-/*   Updated: 2023/05/18 15:49:52 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/19 14:26:15 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
-#include <time.h>
-#include <string.h>
-#include <stdio.h>
 
-void	f()
-{
-	system("leaks pipex");
-}
-
-int	init_data_struct(t_pipex **meta, int argc, char *argv[])
+int	init_data_struct(t_pipex **meta, int argc, char *argv[], char **envp)
 {
 	*meta = malloc(sizeof(t_pipex));
 	if (!*meta)
@@ -30,6 +22,7 @@ int	init_data_struct(t_pipex **meta, int argc, char *argv[])
 	(*meta)->cmd_count = 0;
 	(*meta)->infile = argv[1];
 	(*meta)->outfile = argv[argc - 1];
+	(*meta)->envp = envp;
 	return (1);
 }
 
@@ -40,22 +33,20 @@ int	main(int argc, char *argv[], char *envp[])
 	pid_t	pid;
 	int		status;
 
-	atexit(f);
 	pid = 1;
 	if (argc < 5)
-		return (-1);
-	if (!init_data_struct(&meta, argc, argv))
-		return (perror("pipex"), -2);
-	parse_input(meta, argc, argv, envp);
+		return (ERR_ARGC_COUNT);
+	if (!init_data_struct(&meta, argc, argv, envp))
+		return (perror("pipex"), ERR_ALLOCATION);
+	parse_input(meta, argc, argv);
 	pipe_fd = initialize_pipes(meta->cmd_count - 1);
 	if (!pipe_fd)
-		free_pipex(meta, 1);
-	if (execute_cmd(meta, envp, pipe_fd, &pid) == -1)
-		free_pipex(meta, ERR_EXECUTION);
+		exit_pipex(meta, ERR_ALLOCATION);
+	if (execute_cmd(meta, pipe_fd, &pid) == -1)
+		exit_pipex(meta, ERR_FORK);
 	waitpid(pid, &status, 0);
 	while (wait(NULL) != -1)
 		;
 	free(pipe_fd);
-	free_pipex(meta, WEXITSTATUS(status));
-	return (WEXITSTATUS(status));
+	exit_pipex(meta, WEXITSTATUS(status));
 }

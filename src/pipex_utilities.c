@@ -6,7 +6,7 @@
 /*   By: fvan-wij <marvin@42.fr>                      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2023/05/09 14:45:13 by fvan-wij      #+#    #+#                 */
-/*   Updated: 2023/05/18 16:02:29 by fvan-wij      ########   odam.nl         */
+/*   Updated: 2023/05/19 14:27:54 by fvan-wij      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,8 @@ int	append_node(t_cmd **head, char *cmds[], char *cmd_path, int cmd_count)
 	new_node = NULL;
 	new_node = malloc(sizeof(t_cmd));
 	if (!new_node)
-		return (ft_putstr_fd("Allocation error: failed to allocate memory for 't_cmd node'\n", STDERR_FILENO), 0);
+		return (ft_putstr_fd("Allocation error: failed to \
+					allocate memory for 't_cmd node'\n", STDERR_FILENO), 0);
 	new_node->next = NULL;
 	new_node->cmds = cmds;
 	new_node->cmd_path = cmd_path;
